@@ -6,11 +6,8 @@ from django.db import utils as django_db_utils
 from django.db.backends.base import base as django_db_base
 from django.dispatch import Signal
 
-from typing import Union, Tuple, Callable, List  # noqa. flake8 #118
-
-
 _log = logging.getLogger(__name__)
-default_app_config = 'django_dbconn_retry.DjangoIntegration'
+default_app_config = "django_dbconn_retry.DjangoIntegration"
 
 pre_reconnect = Signal(providing_args=["dbwrapper"])
 post_reconnect = Signal(providing_args=["dbwrapper"])
@@ -40,13 +37,13 @@ else:
     _operror_types += (MySQLdb.OperationalError,)
 
 
-def monkeypatch_django() -> None:
-    def ensure_connection_with_retries(self: django_db_base.BaseDatabaseWrapper) -> None:
-        if self.connection is not None and hasattr(self.connection, 'closed') and self.connection.closed:
+def monkeypatch_django():
+    def ensure_connection_with_retries(self):
+        if self.connection is not None and hasattr(self.connection, "closed") and self.connection.closed:
             _log.debug("failed connection detected")
             self.connection = None
 
-        if self.connection is None and not hasattr(self, '_in_connecting'):
+        if self.connection is None and not hasattr(self, "_in_connecting"):
             with self.wrap_database_errors:
                 try:
                     self._in_connecting = True
@@ -71,8 +68,9 @@ def monkeypatch_django() -> None:
                             self.ensure_connection()
                             post_reconnect.send(self.__class__, dbwrapper=self)
                     else:
-                        _log.debug("Database connection failed, but not due to a known error for dbconn_retry %s",
-                                   str(e))
+                        _log.debug(
+                            "Database connection failed, but not due to a known error for dbconn_retry %s", str(e)
+                        )
                         del self._in_connecting
                         raise
                 else:
@@ -87,5 +85,5 @@ def monkeypatch_django() -> None:
 class DjangoIntegration(AppConfig):
     name = "django_dbconn_retry"
 
-    def ready(self) -> None:
+    def ready(self):
         monkeypatch_django()

@@ -6,7 +6,7 @@ from setuptools import setup
 HERE = os.path.dirname(__file__)
 
 try:
-    long_description = open(os.path.join(HERE, 'README.rst')).read()
+    long_description = open(os.path.join(HERE, "README.rst")).read()
 except IOError:
     long_description = None
 
@@ -14,18 +14,13 @@ except IOError:
 setup(
     name="django-dbconn-retry",
     version="0.1.5",
-    packages=[
-        'django_dbconn_retry',
-        'django_dbconn_retry.tests',
-    ],
-    package_dir={
-        '': '.',
-    },
+    packages=["django_dbconn_retry", "django_dbconn_retry.tests"],
+    package_dir={"": "."},
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
-        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 2.7",
         "License :: OSI Approved :: BSD License",
         "Operating System :: POSIX",
     ],
@@ -36,7 +31,5 @@ setup(
     maintainer_email="info@gopythongo.com",
     description="Patch Django to retry a database connection first before failing.",
     long_description=long_description,
-
-    install_requires=[
-    ],
+    install_requires=[],
 )
